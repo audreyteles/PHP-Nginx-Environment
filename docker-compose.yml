@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # APLICAÇÃO Q IRÁ RODAR O PHP | IMG BASEADA EM DOCKERFILE
+  php:
+    build: ./
+    container_name: php-container
+    restart: always
+    working_dir: /var/www/php
+    depends_on:
+      - mysql
+    volumes:
+      - ./var/www:/var/www/php
+    networks:
+      - ntwk
+
+  # SERVIDOR WEB
+  nginx:
+    image: nginx:1.22.0-alpine
+    container_name: nginx-container
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - php
+    volumes:
+      - ./var/www:/var/www/php
+      - ./docker-compose/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - ntwk
+
+  # BANCO DE DADOS
+  mysql:
+    image: mysql
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      SERVICE_NAME: mysql
+    volumes:
+      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - ntwk
+
+networks:
+  ntwk:
