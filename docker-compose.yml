@@ -44,5 +44,17 @@ services:
     networks:
       - ntwk
 
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin-container
+    restart: always
+    ports:
+      - 8080:80
+    networks:
+      - ntwk
+    environment:
+      - PMA_ARBITRARY=1
+
+
 networks:
   ntwk:
