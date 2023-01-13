@@ -10,21 +10,21 @@ services:
     depends_on:
       - mysql
     volumes:
-      - ./var/www:/var/www/php
+      - ./projects:/var/www/php
     networks:
       - ntwk
 
   # SERVIDOR WEB
   nginx:
     image: nginx:1.22.0-alpine
-    container_name: nginx-container
+    container_name: nginx
     restart: always
     ports:
       - 80:80
     depends_on:
       - php
     volumes:
-      - ./var/www:/var/www/php
+      - ./projects:/var/www/php
       - ./docker-compose/nginx/conf.d:/etc/nginx/conf.d
     networks:
       - ntwk
@@ -32,7 +32,7 @@ services:
   # BANCO DE DADOS
   mysql:
     image: mysql
-    container_name: mysql-container
+    container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       SERVICE_NAME: mysql
@@ -42,11 +42,11 @@ services:
     ports:
       - 3306:3306
     networks:
-      - ntwk
+      - ntwkV
 
   phpmyadmin:
     image: phpmyadmin
-    container_name: phpmyadmin-container
+    container_name: phpmyadmin
     restart: always
     ports:
       - 8080:80
