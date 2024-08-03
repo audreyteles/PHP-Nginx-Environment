@@ -1,4 +1,4 @@
-# PHP + Nginx + Basic Auth + MySQL
+# PHP + Nginx + Basic Auth + MySQL + phpMyAdmin
 
 Environment php with basic authentication provided by nginx server.
 
@@ -23,11 +23,10 @@ Now you can run the command below:
 ```
 docker compose up -d
 ```
+Access ```http://localhost``` and login.
+
 ---
-By accessing ```http://localhost```, you'll be able to see something like this:
-![img.png](img.png)
----
-### Default credentials (If you didnt change before)
+### Default login credentials
 - username: username
 - password: 123
 ---
