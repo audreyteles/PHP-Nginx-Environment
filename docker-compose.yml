@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
-  # APLICAÇÃO Q IRÁ RODAR O PHP | IMG BASEADA EM DOCKERFILE
+  # PHP service
   php:
-    build: ./
-    container_name: php-container
+    build: ./dockerfiles/php
+    container_name: php
     restart: always
     working_dir: /var/www/php
     depends_on:
@@ -14,47 +12,50 @@ services:
     networks:
       - ntwk
 
-  # SERVIDOR WEB
+  # Web server auth
   nginx:
-    image: nginx:1.22.0-alpine
+    image: nginx:1.27-alpine
     container_name: nginx
     restart: always
     ports:
-      - 80:80
+      - "80:80"
     depends_on:
       - php
     volumes:
       - ./projects:/var/www/php
-      - ./docker-compose/nginx/conf.d:/etc/nginx/conf.d
+      - ./data/nginx/conf.d:/etc/nginx/conf.d
+      - ./data/nginx/.htpasswd:/etc/nginx/.htpasswd
     networks:
       - ntwk
 
-  # BANCO DE DADOS
+  # Database
   mysql:
     image: mysql
     container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
       SERVICE_NAME: mysql
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
-      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+      - ./data/mysql:/docker-entrypoint-initdb.d
     restart: always
     ports:
-      - 3306:3306
+      - "3306:3306"
     networks:
       - ntwk
 
+  # Database manager
   phpmyadmin:
     image: phpmyadmin
     container_name: phpmyadmin
     restart: always
     ports:
-      - 8080:80
+      - "8080:80"
     networks:
       - ntwk
     environment:
-      - PMA_ARBITRARY=1
-
+      - PMA_ARBITRARY=${PMA_ARBITRARY}
+      - PMA_USER=${PMA_USER}
+      - PMA_PASSWORD=${PMA_PASSWORD}
 
 networks:
   ntwk:
